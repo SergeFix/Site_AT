@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver import ActionChains
 import unittest
 import header
 
@@ -29,6 +28,33 @@ class HeaderTest(unittest.TestCase):
         for i in header_obj.submenu_links:
             header_obj.newsbtn_mouse_on()
             assert header_obj.news_submenu_click(i) == header_obj.submenu_links[i]
+
+    def test_login_failed(self):
+        """login attempt with incorrect data"""
+        header_obj = header.Header(self.driver)
+        # try to open login form
+        assert not header_obj.login_click_not_loggedin(), "login frame is not displayed"
+        # fill in form with incorrect data
+        header_obj.enter_username("test_user")
+        header_obj.enter_password("test_password")
+        #check alert about incorrect logon/password
+        assert header_obj.click_login_btn(), "alert about incorrect logon/password is absent"
+        #check user is not logged in
+        assert header_obj.login_click_loggedin(), "user with incorrect credentials are logged in"
+
+    def test_search(self):
+        """test search"""
+        header_obj = header.Header(self.driver)
+        #open search form
+        assert header_obj.click_search(), "search form is unavailable"
+        #try to search by keyword having not empty results
+        header_obj.run_search('renault')
+        #check search found specific article
+        assert (header_obj.search_results_general() == 0) , 'nothing found, expected several news in results'
+
+    def test_(self):
+        """"""
+        header_obj = header.Header(self.driver)
 
 
 
